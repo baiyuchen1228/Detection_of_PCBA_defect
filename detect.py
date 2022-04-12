@@ -147,6 +147,7 @@ def detect(save_img=False):
     return save_dir
 
 if __name__ == '__main__':
+    t1 = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str, default='weight/0906best.pt',
                         help='model.pt path(s)')  # yolov5s.pt
@@ -177,7 +178,9 @@ if __name__ == '__main__':
         else:
             save_dir = detect()
     save_dir = save_dir.as_posix()
-    with open(os.path.join(save_dir, "result.txt"), 'w') as out:
+    t3 = time.time()
+    totaltime = int(t3 - t1)
+    with open(os.path.join(save_dir, "result_{:02d}{:02d}.txt".format(totaltime//60,totaltime%60)), 'w') as out:
         labels = os.path.join(save_dir, 'labels')
         cla = []
         conf = []
@@ -196,6 +199,9 @@ if __name__ == '__main__':
             read.close()
             print(os.path.join(save_dir, 'labels') + txt + '\t:' + ans + '\n')
             out.write(os.path.join(save_dir, 'labels') + txt + '\t:' + ans + '\n')
+        print("total time:" + str(totaltime) + 's')
+        out.write("total time:" + str(totaltime) + 's')
+
 
 
 # --weights best.pt --img 416 --conf 0.4 --source 0 --save-txt --save-conf
